@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Booking Prediction</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+        }
+        label {
+            font-size: 1.1em;
+        }
+        input[type="text"], input[type="number"], select {
+            width: 100%;
+            padding: 10px;
+            margin: 8px 0;
+            border-radius: 5px;
+            border: 1px solid #ddd;
+        }
+        button {
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        .result {
+            margin-top: 20px;
+            padding: 10px;
+            background-color: #f4f4f4;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+
+    <h2>Booking Prediction</h2>
+    <form id="prediction-form">
+        <label for="num_passengers">Number of Passengers:</label>
+        <input type="number" id="num_passengers" name="num_passengers" required>
+
+        <label for="sales_channel">Sales Channel:</label>
+        <input type="text" id="sales_channel" name="sales_channel" required>
+
+        <label for="trip_type">Trip Type:</label>
+        <input type="text" id="trip_type" name="trip_type" required>
+
+        <label for="purchase_lead">Purchase Lead (days):</label>
+        <input type="number" id="purchase_lead" name="purchase_lead" required>
+
+        <label for="flight_hour">Flight Hour:</label>
+        <input type="number" id="flight_hour" name="flight_hour" required>
+
+        <label for="flight_day">Flight Day:</label>
+        <input type="text" id="flight_day" name="flight_day" required>
+
+        <label for="flight_duration">Flight Duration (hours):</label>
+        <input type="number" id="flight_duration" name="flight_duration" required>
+
+        <button type="submit">Get Prediction</button>
+    </form>
+
+    <div id="result" class="result" style="display: none;">
+        <h3>Prediction Result:</h3>
+        <p id="prediction"></p>
+        <p id="confidence"></p>
+    </div>
+
+    <script>
+        document.getElementById('prediction-form').addEventListener('submit', function(event) {
+            event.preventDefault();
+
+            let formData = new FormData(this);
+
+            fetch('/predict', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('result').style.display = 'block';
+                document.getElementById('prediction').innerText = data.prediction;
+                document.getElementById('confidence').innerText = `Confidence: ${data.confidence}`;
+            })
+            .catch(error => console.error('Error:', error));
+        });
+    </script>
+
+</body>
+</html>
